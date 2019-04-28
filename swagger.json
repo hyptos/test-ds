@@ -1,0 +1,250 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "test-ds",
+    "version": "1.0.0",
+    "title": "test-DS"
+  },
+  "host": "localhost",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Everything about your users"
+    },
+    {
+      "name": "Movie",
+      "description": "Everything about your movie"
+    },
+    {
+      "name": "Rank",
+      "description": "Everything about your ranks"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/user": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create a user",
+        "description": "",
+        "operationId": "createUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "description": "Valid email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "pseudo",
+            "description": "An identifier to the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "date_naissance",
+            "description": "Timestamp of the date of birth",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created"
+          },
+          "400": {
+            "description": "Invalid field supplied"
+          }
+        }
+      }
+    },
+    "/user/{idUser}/movie/{idMovie}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Add a movie to a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "idUser",
+            "type": "integer",
+            "description": "user identifier",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "idMovie",
+            "type": "integer",
+            "description": "movie identifier",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "movie deleted"
+          },
+          "204": {
+            "description": "movie already added"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a movie to a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "idUser",
+            "type": "integer",
+            "description": "user identifier",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "idMovie",
+            "type": "integer",
+            "description": "movie identifier",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "movie deleted"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/{idUser}/movies": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get a user's movies",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "idUser",
+            "type": "integer",
+            "description": "movie identifier",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid field supplied"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/movie/{idMovie}/users": {
+      "get": {
+        "tags": [
+          "Movie"
+        ],
+        "summary": "Get a movie's users",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "idMovie",
+            "type": "integer",
+            "description": "movie identifier",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of a movie's user"
+          },
+          "404": {
+            "description": "Movie not found"
+          }
+        }
+      }
+    },
+    "/rank/movie": {
+      "get": {
+        "tags": [
+          "Rank"
+        ],
+        "summary": "Get the best movie",
+        "responses": {
+          "200": {
+            "description": "Movie object"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url_poster": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Category"
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pseudo": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "date_naissance": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
