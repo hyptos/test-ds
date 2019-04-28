@@ -15,3 +15,10 @@ de création en base de données)
  - lister les utilisateurs ayant choisi un film
  - retourner le meilleur film selon l'ensemble des utilisateurs
 
+La documentation est visible ici : 
+
+https://petstore.swagger.io/#/
+
+En utilisant ce swagger.json : 
+
+https://raw.githubusercontent.com/hyptos/test-ds/master/swagger.json
