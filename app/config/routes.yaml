@@ -3,6 +3,11 @@ put_user:
     controller: App\Controller\UserController::put
     methods: PUT
 
+put_movie:
+    path: v1/movie
+    controller: App\Controller\MovieController::put
+    methods: PUT
+
 put_user_movie:
     path: v1/user/{idUser}/movie/{idMovie}
     controller: App\Controller\UserMovieController::put
