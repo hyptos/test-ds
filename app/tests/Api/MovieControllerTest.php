@@ -12,14 +12,17 @@ final class MovieControllerTest extends TestCase
     {
 
     	$client = new \GuzzleHttp\Client([
-            'debug'     =>  false
+            'debug'     =>  false,
+            'defaults' => [
+                 'headers'  => ['content-type' => 'application/json', 'Accept' => 'application/json']
+            ],
         ]);
 
         $data = array(
             'title' => 'super_title',
             'url_poster' => 'super_poster',
         );
-        $response = $client->put('web/v1/movie', ['form_params' => $data, 'verify' => false]);
+        $response = $client->put('web/movie', ['form_params' => $data, 'verify' => false]);
 
 
         $this->assertEquals(201, $response->getStatusCode());

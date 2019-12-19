@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 final class UserMovieControllerTest extends TestCase
 {
+    
     public function testAddMovieToUser()
     {
 
@@ -16,21 +17,21 @@ final class UserMovieControllerTest extends TestCase
         ]);
 
         // New movie for this user
-        $response = $client->put('web/v1/user/1/movie/1', ['verify' => false]);
+        $response = $client->put('web/user/1/movie/1', ['verify' => false]);
         $this->assertEquals(201, $response->getStatusCode());
 
         // movie not found
-        $response = $client->put('web/v1/user/1/movie/11111', ['verify' => false, 'http_errors' => false]);
+        $response = $client->put('web/user/1/movie/11111', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
 
         // user not found
-        $response = $client->put('web/v1/user/11111/movie/1', ['verify' => false, 'http_errors' => false]);
+        $response = $client->put('web/user/11111/movie/1', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
 
         // Movie already exist for this user
-        $response = $client->put('web/v1/user/1/movie/1', ['verify' => false]);
+        $response = $client->put('web/user/1/movie/1', ['verify' => false]);
         $this->assertEquals(204, $response->getStatusCode());
         
     }
@@ -43,21 +44,21 @@ final class UserMovieControllerTest extends TestCase
         ]);
 
         // Delete this movie for this user
-        $response = $client->delete('web/v1/user/1/movie/1', ['verify' => false]);
+        $response = $client->delete('web/user/1/movie/1', ['verify' => false]);
         $this->assertEquals(200, $response->getStatusCode());
 
         // movie not found
-        $response = $client->delete('web/v1/user/1/movie/11111', ['verify' => false, 'http_errors' => false]);
+        $response = $client->delete('web/user/1/movie/11111', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
 
         // user not found
-        $response = $client->delete('web/v1/user/11111/movie/1', ['verify' => false, 'http_errors' => false]);
+        $response = $client->delete('web/user/11111/movie/1', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
 
         // Already Deleted
-        $response = $client->delete('web/v1/user/1/movie/1', ['verify' => false]);
+        $response = $client->delete('web/user/1/movie/1', ['verify' => false]);
         $this->assertEquals(200, $response->getStatusCode());
         
     }
@@ -70,29 +71,33 @@ final class UserMovieControllerTest extends TestCase
         ]);
 
         // list all movies for this user
-        $response = $client->get('web/v1/user/1/movies', ['verify' => false]);
+        $response = $client->get('web/user/1/movies', ['verify' => false]);
         $this->assertEquals(200, $response->getStatusCode());
 
         // user not found
-        $response = $client->get('web/v1/user/11111/movies', ['verify' => false, 'http_errors' => false]);
+        $response = $client->get('web/user/11111/movies', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
         
     }
 
+
     public function testListeUsersToMovie()
     {
 
         $client = new \GuzzleHttp\Client([
-            'debug'     =>  false
+            'debug'     =>  false,
+            'defaults' => [
+                 'headers'  => ['content-type' => 'application/json', 'Accept' => 'application/json']
+            ],
         ]);
 
         // list all users for this movie
-        $response = $client->get('web/v1/movie/1/users', ['verify' => false]);
+        $response = $client->get('web/movie/1/users', ['verify' => false]);
         $this->assertEquals(200, $response->getStatusCode());
 
         // movie not found
-        $response = $client->get('web/v1/movie/11111/users', ['verify' => false, 'http_errors' => false]);
+        $response = $client->get('web/movie/11111/users', ['verify' => false, 'http_errors' => false]);
         $this->assertEquals(404, $response->getStatusCode());
 
         

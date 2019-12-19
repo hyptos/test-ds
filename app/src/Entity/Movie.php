@@ -93,7 +93,8 @@ class Movie
         return $this;
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
@@ -101,11 +102,13 @@ class Movie
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return json_encode($this->toArray());
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return ''.$this->jsonSerialize();
     }
 }

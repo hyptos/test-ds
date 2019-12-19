@@ -4,154 +4,140 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Movie;
+use App\Entity\User;
+use App\Repository\MovieRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
-use App\Entity\Movie;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class UserMovieController extends Controller
+class UserMovieController extends AbstractFOSRestController
 {
-
-	/**
-     * Matches /user/{id}/movie/{id}
+    /**
+     * Add a movie resource.
+     *
+     * @Rest\Put("/user/{idUser}/movie/{idMovie}")
      *
      * @param Request $request
      *
-     * @return Response
-     */
-    public function put(Request $request)
+     * @return View
+     **/
+    public function put(int $idUser, int $idMovie, MovieRepository $movieRepository, UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
-    	// user exist
-    	$intIdUser = $request->get('idUser');
-        $objUser = $this->getDoctrine()->getRepository(User::class)->find($intIdUser);
-        if ($objUser === null) {
-            return new JsonResponse('user not found', Response::HTTP_NOT_FOUND );
+        // user exist
+        $objUser = $userRepository->find($idUser);
+        if (null === $objUser) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'User not found.');
         }
 
-    	// movie exist
-    	$intIdMovie = $request->get('idMovie');
-        $objMovieFound = $this->getDoctrine()->getRepository(Movie::class)->find($intIdMovie);
-        if ($objMovieFound === null) {
-            return new JsonResponse('movie not found', Response::HTTP_NOT_FOUND );
+        // movie exist
+        $objMovieFound = $movieRepository->find($idMovie);
+        if (null === $objMovieFound) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'Movie not found.');
         }
 
+        // user_movie exist
+        $bHasMovie = $objUser->hasMovie($objMovieFound);
+        if ($bHasMovie) {
+            throw new HttpException(Response::HTTP_NO_CONTENT, 'Movie already exist.');
+        }
 
-    	// user_movie exist
-        $colMovies = $objUser->getMovies();
-        $arrIdsMovies = [];
-        foreach($colMovies as $objMovie) {
-            $arrIdsMovies[] = $objMovie->getId();
-        } 
-    	if (in_array($intIdMovie, $arrIdsMovies)) {	       
-            return new JsonResponse('movie already exist', Response::HTTP_NO_CONTENT);
-    	}
-
-    	// user_movie added
-    	$objUser->addMovie($objMovieFound);
-        $entityManager = $this->getDoctrine()->getManager();
+        // user_movie added
+        $objUser->addMovie($objMovieFound);
         $entityManager->persist($objUser);
         $entityManager->flush();
-    	
 
-        return new Response($objMovieFound, Response::HTTP_CREATED);
+        return new JsonResponse($objMovieFound, Response::HTTP_CREATED);
     }
 
-	/**
-     * Matches /user/{id}/movie/{id}
+    /**
+     * Delete a movie resource.
+     *
+     * @Rest\Delete("/user/{idUser}/movie/{idMovie}")
      *
      * @param Request $request
      *
-     * @return Response
-     */
-    public function delete(Request $request)
+     * @return View
+     **/
+    public function delete(int $idUser, int $idMovie, MovieRepository $movieRepository, UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
-
-    	// user exist
-    	$intIdUser = $request->get('idUser');
-        $objUser = $this->getDoctrine()->getRepository(User::class)->find($intIdUser);
-        if ($objUser === null) {
-            return new JsonResponse('user not found', Response::HTTP_NOT_FOUND );
+        // user exist
+        $objUser = $userRepository->find($idUser);
+        if (null === $objUser) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'User not found.');
         }
 
-    	// movie exist
-    	$intIdMovie = $request->get('idMovie');
-        $objMovie = $this->getDoctrine()->getRepository(Movie::class)->find($intIdMovie);
-        if ($objMovie === null) {
-            return new JsonResponse('movie not found', Response::HTTP_NOT_FOUND );
+        // movie exist
+        $objMovie = $movieRepository->find($idMovie);
+        if (null === $objMovie) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'Movie not found.');
         }
 
-    	// user_movie exist
-        $colMovies = $objUser->getMovies();
-        $arrIdsMovies = [];
-        foreach($colMovies as $objMovie) {
-            $arrIdsMovies[] = $objMovie->getId();
-        } 
-        if (in_array($intIdMovie, $arrIdsMovies)) {        
+        // user_movie exist
+        $bHasMovie = $objUser->hasMovie($objMovie);
+        if ($bHasMovie) {
             $objUser->removeMovie($objMovie);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($objUser);
         $entityManager->flush();
 
-        return new Response($objMovie, Response::HTTP_OK);
+        return new JsonResponse($objMovie, Response::HTTP_OK);
     }
 
-	/**
-     * Matches /user/{id}/movies
+    /**
+     * Get all movies from a user resource.
+     *
+     * @Rest\Get("/user/{userId}/movies")
      *
      * @param Request $request
      *
-     * @return Response
-     */
-    public function getMovies(Request $request)
+     * @return View
+     **/
+    public function getMovies(int $userId, UserRepository $userRepository)
     {
-
-    	// user exist
-    	$intIdUser = $request->get('idUser');
-        $objUser = $this->getDoctrine()->getRepository(User::class)->find($intIdUser);
-        if ($objUser === null) {
-            return new JsonResponse('user not found', Response::HTTP_NOT_FOUND );
+        // user exist
+        $intIdUser = $userId;
+        $objUser = $userRepository->find($intIdUser);
+        if (null === $objUser) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'User not found.');
         }
 
-    	$colMovies = $objUser->getMovies()->toArray();
-        $colMovies = $objUser->getMovies();
-        $arrMovies = [];
-        foreach($colMovies as $objMovie) {
-            $arrMovies[] = $objMovie->toArray();
-        } 
+        $colMovies = $objUser->getMovies()->toArray();
 
-        return new JsonResponse($arrMovies, Response::HTTP_OK);
+        return new Response(json_encode($colMovies), Response::HTTP_OK);
     }
 
-	/**
-     * Matches /movie/{id}/users
+    /**
+     * Get all users from a movie resource.
+     *
+     * @Rest\Get("/movie/{movieId}/users")
      *
      * @param Request $request
      *
-     * @return Response
-     */
-    public function getUsers(Request $request)
+     * @return View
+     **/
+    public function getUsers(int $movieId, MovieRepository $movieRepository)
     {
-
-    	// movie exist
-    	$intIdMovie = $request->get('idMovie');
-        $objMovie = $this->getDoctrine()->getRepository(Movie::class)->find($intIdMovie);
-        if ($objMovie === null) {
-            return new JsonResponse('movie not found', Response::HTTP_NOT_FOUND );
+        // movie exist
+        $intIdMovie = $movieId;
+        $objMovie = $movieRepository->find($intIdMovie);
+        if (null === $objMovie) {
+            throw new HttpException(Response::HTTP_NOT_FOUND, 'Movie not found.');
         }
-    	
 
         $colUsers = $objMovie->getUser();
         $arrUsers = [];
-        foreach($colUsers as $objUser) {
+        foreach ($colUsers as $objUser) {
             $arrUsers[] = $objUser->toArray();
-        } 
+        }
 
-        return new JsonResponse($arrUsers, Response::HTTP_OK);
+        return new Response(json_encode($arrUsers), Response::HTTP_OK);
     }
-
-}   
+}

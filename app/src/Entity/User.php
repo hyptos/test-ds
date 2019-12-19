@@ -117,7 +117,21 @@ class User implements \JsonSerializable
         return $this;
     }
 
-    public function toArray() {
+    public function hasMovie($movie)
+    {
+        $arrIdsMovies = [];
+        foreach ($this->getMovies() as $objMovie) {
+            $arrIdsMovies[] = $objMovie->getId();
+        }
+        if (in_array($movie->getId(), $arrIdsMovies)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function toArray()
+    {
         return [
             'id' => $this->getId(),
             'pseudo' => $this->getPseudo(),
@@ -126,11 +140,13 @@ class User implements \JsonSerializable
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return json_encode($this->toArray());
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return ''.$this->jsonSerialize();
     }
 

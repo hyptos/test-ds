@@ -20,7 +20,7 @@ final class UserControllerTest extends TestCase
             'date_naissance' => 5,
             'email' => 'foo@bar.com'
         );
-        $response = $client->put('web/v1/user', ['form_params' => $data, 'verify' => false]);
+        $response = $client->put('web/user', ['form_params' => $data, 'verify' => false]);
 
 
         $this->assertEquals(201, $response->getStatusCode());

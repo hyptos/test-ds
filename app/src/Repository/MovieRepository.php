@@ -19,14 +19,15 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function getBestMovie() {
+    public function getBestMovie()
+    {
         $qb = $this->createQueryBuilder('p');
 
         $qb->innerJoin('p.user', 'u')
            ->groupBy('p.id')
            ->orderBy('count(p.id)', 'DESC')
            ->setMaxResults(1);
-           
+
         $query = $qb->getQuery();
 
         return $query->getScalarResult();

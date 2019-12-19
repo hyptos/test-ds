@@ -4,53 +4,52 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class UserController extends Controller
+class UserController extends AbstractFOSRestController
 {
     /**
-     * Matches /user/
+     * Create a user resource.
      *
-     * @param Request $request
+     * @Rest\Put("/user")
      *
-     * @return Response
-     */
-    public function put(Request $request)
+     * @return View
+     **/
+    public function put(Request $request, EntityManagerInterface $entityManager)
     {
+        $strPseudo = $request->get('pseudo');
+        $strDateNaissance = $request->get('date_naissance');
+        $strEmail = $request->get('email');
 
-    	$strPseudo = $request->get('pseudo');
-    	$strDateNaissance = $request->get('date_naissance');
-    	$strEmail = $request->get('email');
-
-    	if(empty($strPseudo)) {
-    		return new JsonResponse('field pseudo is empty', Response::HTTP_BAD_REQUEST );
-    	}
-    	if(empty($strDateNaissance)) {
-    		return new JsonResponse('field date_naissance is empty', Response::HTTP_BAD_REQUEST );
-    	}
-    	if(empty($strEmail) && filter_var($strEmail, FILTER_VALIDATE_EMAIL) === false) {
-    		return new JsonResponse('field email is empty', Response::HTTP_BAD_REQUEST );
-    	}
+        if (empty($strPseudo)) {
+            throw new HttpException(Response::HTTP_BAD_REQUEST, 'field pseudo is empty.');
+        }
+        if (empty($strDateNaissance)) {
+            throw new HttpException(Response::HTTP_BAD_REQUEST, 'field date_naissance is empty.');
+        }
+        if (empty($strEmail) && false === filter_var($strEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new HttpException(Response::HTTP_BAD_REQUEST, 'field email is empty.');
+        }
 
         $objUser = new User();
         $objUser->setPseudo($strPseudo);
         $objUser->setDateInserted(new \Datetime());
 
         $objDateNaissance = new \Datetime();
-        $objDateNaissance->setTimestamp((int)$strDateNaissance);
+        $objDateNaissance->setTimestamp((int) $strDateNaissance);
         $objUser->setDateNaissance($objDateNaissance);
         $objUser->setEmail($strEmail);
 
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($objUser);
         $entityManager->flush();
 
-		return new JsonResponse($objUser, Response::HTTP_CREATED);
+        return new JsonResponse($objUser, Response::HTTP_CREATED);
     }
-
 }

@@ -7,14 +7,18 @@
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^1.10",
         "doctrine/orm": "^2.6",
+        "friendsofsymfony/rest-bundle": "^2.6",
         "guzzlehttp/guzzle": "^6.5",
-        "symfony/console": "4.2.*",
-        "symfony/dotenv": "4.2.*",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
+        "symfony/finder": "4.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.2.*",
+        "symfony/framework-bundle": "4.4.*",
         "symfony/orm-pack": "^1.0",
+        "symfony/serializer-pack": "^1.0",
+        "symfony/templating": "4.4.*",
         "symfony/test-pack": "^1.0",
-        "symfony/yaml": "4.2.*"
+        "symfony/yaml": "4.4.*"
     },
     "config": {
         "preferred-install": {
@@ -58,10 +62,12 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.2.*"
+            "require": "4.4.*"
         }
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.3",
         "symfony/maker-bundle": "^1.11"
     }
 }

@@ -15,7 +15,7 @@ final class RankControllerTest extends TestCase
             'debug'     =>  false
         ]);
 
-        $response = $client->get('web/v1/rank/movie', ['verify' => false]);
+        $response = $client->get('web/rank/movie', ['verify' => false]);
 
 
         $this->assertEquals(200, $response->getStatusCode());
