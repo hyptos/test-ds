@@ -21,7 +21,7 @@ class MovieController extends AbstractFOSRestController
      *
      * @Rest\Put("/movie")
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function put(Request $request, EntityManagerInterface $entityManager)
     {
@@ -52,7 +52,7 @@ class MovieController extends AbstractFOSRestController
      *
      * @param Request $request
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function getMovie(int $idMovie, MovieRepository $movieRepository)
     {
