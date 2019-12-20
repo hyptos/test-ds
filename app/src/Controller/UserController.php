@@ -20,7 +20,7 @@ class UserController extends AbstractFOSRestController
      *
      * @Rest\Put("/user")
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function put(Request $request, EntityManagerInterface $entityManager)
     {
