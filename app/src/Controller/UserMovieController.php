@@ -26,7 +26,7 @@ class UserMovieController extends AbstractFOSRestController
      *
      * @param Request $request
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function put(int $idUser, int $idMovie, MovieRepository $movieRepository, UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
@@ -63,7 +63,7 @@ class UserMovieController extends AbstractFOSRestController
      *
      * @param Request $request
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function delete(int $idUser, int $idMovie, MovieRepository $movieRepository, UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
@@ -98,7 +98,7 @@ class UserMovieController extends AbstractFOSRestController
      *
      * @param Request $request
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function getMovies(int $userId, UserRepository $userRepository)
     {
@@ -111,7 +111,7 @@ class UserMovieController extends AbstractFOSRestController
 
         $colMovies = $objUser->getMovies()->toArray();
 
-        return new Response(json_encode($colMovies), Response::HTTP_OK);
+        return new JsonResponse(json_encode($colMovies), Response::HTTP_OK);
     }
 
     /**
@@ -138,6 +138,6 @@ class UserMovieController extends AbstractFOSRestController
             $arrUsers[] = $objUser->toArray();
         }
 
-        return new Response(json_encode($arrUsers), Response::HTTP_OK);
+        return new JsonResponse(json_encode($arrUsers), Response::HTTP_OK);
     }
 }
