@@ -21,7 +21,7 @@ class RankController extends AbstractFOSRestController
      *
      * @param Request $request
      *
-     * @return View
+     * @return JsonResponse
      **/
     public function getMovie(MovieRepository $movieRepository)
     {
